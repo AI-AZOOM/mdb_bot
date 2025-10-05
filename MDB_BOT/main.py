@@ -1,10 +1,10 @@
 import re
 import asyncio
 import logging
-import os # <--- 🚨 NEW IMPORT FOR ENVIRONMENT VARIABLES
+import os
 from telethon import TelegramClient, events
 from telethon.tl.types import MessageEntityTextUrl
-from aiohttp import web # <--- 🚨 NEW IMPORT FOR WEB SERVER
+from aiohttp import web
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(asctime)s - %(message)s')
@@ -44,8 +44,8 @@ except Exception as e:
     logging.error(f"FATAL ERROR during credential parsing: {e}")
     
 # --- Channel/Bot/Group Constants ---
-channel_a_username = 'testoormdb'#'solwhaletrending'  # Solana, long pipeline source (Requires 🔥 prefix)
-channel_b_username = 'testoorbnb'#'AveSignalMonitor'    # BNB (EVM), short pipeline source (Requires 🪙 prefix)
+channel_a_username = 'testoormdb'#'solwhaletrending'   # Solana, long pipeline source (Requires prefix)
+channel_b_username = 'testoorbnb'#'AveSignalMonitor'    # BNB (EVM), short pipeline source (Requires prefix)
 # ---------------------------------------------------
 soul_scanner_bot_username = 'soul_scanner_bot'
 phanes_bot_username = 'PhanesRedBot'
@@ -76,7 +76,8 @@ def is_valid_solana_address(address: str) -> bool:
 
 # Create a client that will log in as a regular user, not a bot.
 # The session file name must remain constant on Render restarts
-client = TelegramClient('session_user', api_id, api_hash)
+# RENDER DEPLOYMENT PATH
+client = TelegramClient('MDB_BOT/session_user', api_id, api_hash)
 
 # ----------------------------------------------------------------------
 # --- CRITICAL RENDER FIX: Health Check Web Server ---
@@ -155,11 +156,11 @@ async def main():
     # ----------------------------------------------------------------------------------
     @client.on(events.NewMessage(chats=channel_a_username))
     async def sol_handler(event):
-        """STEP A1: MONITOR SOLANA CHANNEL & SEND CA TO SOUL SCANNER (Only if starts with 🔥)."""
+        """STEP A1: MONITOR SOLANA CHANNEL & SEND CA TO SOUL SCANNER (Only if starts with fire emoji)."""
         
         raw_text = event.raw_text.strip()
-        # --- SOLANA FILTER: CHECK FOR 🔥 START ---
-        if not raw_text.startswith('🔥'):
+        # --- SOLANA FILTER: CHECK FOR FIRE EMOJI START ---
+        if not raw_text.startswith('🔥'): # NOTE: If this emoji still causes issues, change the source channel filter!
             logging.info(f"Pipeline A Skip: Message from {channel_a_username} did not start with '🔥'.")
             return
         # ------------------------------------------
@@ -234,11 +235,11 @@ async def main():
     # ----------------------------------------------------------------------------------
     @client.on(events.NewMessage(chats=channel_b_username))
     async def bnb_handler(event):
-        """STEP B1: MONITOR BNB CHANNEL & SEND CA DIRECTLY TO PHANES (Only if starts with 🪙)."""
+        """STEP B1: MONITOR BNB CHANNEL & SEND CA DIRECTLY TO PHANES (Only if starts with coin emoji)."""
         
         raw_text = event.raw_text.strip()
-        # --- BNB FILTER: CHECK FOR 🪙 START ---
-        if not raw_text.startswith('🪙'):
+        # --- BNB FILTER: CHECK FOR COIN EMOJI START ---
+        if not raw_text.startswith('🪙'): # NOTE: If this emoji still causes issues, change the source channel filter!
             logging.info(f"Pipeline B Skip: Message from {channel_b_username} did not start with '🪙'.")
             return
         # ------------------------------------------
@@ -265,7 +266,7 @@ async def main():
             if state == 'b_waiting_for_response':
                 found_ca = ca
                 break
-                        
+                            
         if not found_ca: return
 
         logging.info(f"Pipeline B Step 2: Assuming initial response for {found_ca}. IMMEDIATELY sending /tt command.")
