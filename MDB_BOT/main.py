@@ -44,8 +44,8 @@ except Exception as e:
     logging.error(f"FATAL ERROR during credential parsing: {e}")
     
 # --- Channel/Bot/Group Constants ---
-channel_a_username = 'testoormdb'#'solwhaletrending'   # Solana, long pipeline source (Requires prefix)
-channel_b_username = 'testoorbnb'#'AveSignalMonitor'    # BNB (EVM), short pipeline source (Requires prefix)
+channel_a_username = 'solwhaletrending'   # Solana, long pipeline source (Requires prefix)
+channel_b_username = 'AveSignalMonitor'    # BNB (EVM), short pipeline source (Requires prefix)
 # ---------------------------------------------------
 soul_scanner_bot_username = 'soul_scanner_bot'
 phanes_bot_username = 'PhanesRedBot'
@@ -76,7 +76,7 @@ def is_valid_solana_address(address: str) -> bool:
 
 # Create a client that will log in as a regular user, not a bot.
 # The session file name must remain constant on Render restarts
-# RENDER DEPLOYMENT PATH
+# TEMPORARY FIX FOR LOCAL LOGIN ONLY
 client = TelegramClient('MDB_BOT/session_user', api_id, api_hash)
 
 # ----------------------------------------------------------------------
